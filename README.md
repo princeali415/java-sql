@@ -79,10 +79,14 @@ WHERE supplier_id = '11'
 
   <details><summary>hint</summary>
 
-  * This can be done with SELECT, WHERE, and ORDER BY clauses
+  * This can be done with SELECT, WHERE, and ORDER BY clauses (NOTE - do NOT need WHERE)
   </details>
 
 ```SQL
+
+SELECT *
+FROM orders
+ORDER BY order_date DESC
 
 ```
 
@@ -96,6 +100,10 @@ WHERE supplier_id = '11'
 
 ```SQL
 
+SELECT *
+FROM suppliers
+WHERE LENGTH(company_name) > 20
+
 ```
 
 * [ ] ***find all customers that include the word 'MARKET' in the contact title. Should return 19 records***
@@ -108,6 +116,10 @@ WHERE supplier_id = '11'
   </details>
 
 ```SQL
+
+SELECT *
+FROM customers
+WHERE upper(contact_title) LIKE '%MARKET%'
 
 ```
 
@@ -126,6 +138,9 @@ WHERE supplier_id = '11'
 
 ```SQL
 
+insert into customers(customer_id, company_name, contact_name, address, city, postal_code, country)
+values ('SHIRE', 'The Shire', 'Bilbo Baggins', '1 Hobbit Hole', 'Bag End', '111', 'Middle Earth')
+
 ```
 
 * [ ] ***update _Bilbo Baggins_ record so that the postal code changes to _"11122"_***
@@ -136,6 +151,10 @@ WHERE supplier_id = '11'
   </details>
 
 ```SQL
+
+update customers 
+set postal_code = '11122'
+where contact_name = 'Bilbo Baggins'
 
 ```
 
@@ -149,6 +168,11 @@ WHERE supplier_id = '11'
 
 ```SQL
 
+select count(c.customer_id) TotalCustomers, c.company_name Company
+from customers c left join orders o
+on c.customer_id = o.customer_id
+group by c.company_name
+
 ```
 
 * [ ] ***list customers by contact name and the number of orders per contact name. Sort the list by the number of orders in descending order. _Jose Pavarotti_ should be at the top with 31 orders followed by _Roland Mendal_ with 30 orders. Last should be _Francisco Chang_ with 1 order***
@@ -160,6 +184,12 @@ WHERE supplier_id = '11'
 
 ```SQL
 
+select count(o.order_id) total_orders, c.contact_name contact_name
+from customers c left join orders o
+on c.customer_id = o.customer_id
+group by c.contact_name
+order by total_orders desc
+
 ```
 
 * [ ] ***list orders grouped by customer's city showing the number of orders per city. Returns 69 Records with _Aachen_ showing 6 orders and _Albuquerque_ showing 18 orders***
@@ -170,6 +200,12 @@ WHERE supplier_id = '11'
   </details>
 
 ```SQL
+
+select count(o.order_id) total_orders, c.city city
+from customers c left join orders o
+on c.customer_id = o.customer_id
+group by c.city
+order by city 
 
 ```
 
