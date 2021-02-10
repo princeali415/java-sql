@@ -265,7 +265,6 @@ Table Name: Enviornment
 |     1      |fenced_yard |
 |     2      |city_dweller|
 
-
 ---
 
 ### Stretch Goals
