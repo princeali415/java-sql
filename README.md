@@ -38,6 +38,10 @@ Reimport the Northwind database into PostgreSQL using pgAdmin. This is the same 
 
 ```SQL
 
+SELECT *
+FROM customers
+WHERE city = 'London'
+
 ```
 
 * [ ] ***find all customers with postal code 1010. Returns 3 customers***
@@ -48,6 +52,11 @@ Reimport the Northwind database into PostgreSQL using pgAdmin. This is the same 
   </details>
 
 ```SQL
+
+SELECT *
+FROM customers
+WHERE postal_code = '1010'
+
 
 ```
 
@@ -60,16 +69,24 @@ Reimport the Northwind database into PostgreSQL using pgAdmin. This is the same 
 
 ```SQL
 
+SELECT phone
+FROM suppliers
+WHERE supplier_id = '11'
+
 ```
 
 * [ ] ***list orders descending by the order date. The order with date 1998-05-06 should be at the top***
 
   <details><summary>hint</summary>
 
-  * This can be done with SELECT, WHERE, and ORDER BY clauses
+  * This can be done with SELECT, WHERE, and ORDER BY clauses (NOTE - do NOT need WHERE)
   </details>
 
 ```SQL
+
+SELECT *
+FROM orders
+ORDER BY order_date DESC
 
 ```
 
@@ -83,6 +100,10 @@ Reimport the Northwind database into PostgreSQL using pgAdmin. This is the same 
 
 ```SQL
 
+SELECT *
+FROM suppliers
+WHERE LENGTH(company_name) > 20
+
 ```
 
 * [ ] ***find all customers that include the word 'MARKET' in the contact title. Should return 19 records***
@@ -95,6 +116,10 @@ Reimport the Northwind database into PostgreSQL using pgAdmin. This is the same 
   </details>
 
 ```SQL
+
+SELECT *
+FROM customers
+WHERE upper(contact_title) LIKE '%MARKET%'
 
 ```
 
@@ -113,6 +138,9 @@ Reimport the Northwind database into PostgreSQL using pgAdmin. This is the same 
 
 ```SQL
 
+insert into customers(customer_id, company_name, contact_name, address, city, postal_code, country)
+values ('SHIRE', 'The Shire', 'Bilbo Baggins', '1 Hobbit Hole', 'Bag End', '111', 'Middle Earth')
+
 ```
 
 * [ ] ***update _Bilbo Baggins_ record so that the postal code changes to _"11122"_***
@@ -123,6 +151,10 @@ Reimport the Northwind database into PostgreSQL using pgAdmin. This is the same 
   </details>
 
 ```SQL
+
+update customers 
+set postal_code = '11122'
+where contact_name = 'Bilbo Baggins'
 
 ```
 
@@ -136,6 +168,11 @@ Reimport the Northwind database into PostgreSQL using pgAdmin. This is the same 
 
 ```SQL
 
+select count(c.customer_id) TotalCustomers, c.company_name Company
+from customers c left join orders o
+on c.customer_id = o.customer_id
+group by c.company_name
+
 ```
 
 * [ ] ***list customers by contact name and the number of orders per contact name. Sort the list by the number of orders in descending order. _Jose Pavarotti_ should be at the top with 31 orders followed by _Roland Mendal_ with 30 orders. Last should be _Francisco Chang_ with 1 order***
@@ -147,6 +184,12 @@ Reimport the Northwind database into PostgreSQL using pgAdmin. This is the same 
 
 ```SQL
 
+select count(o.order_id) total_orders, c.contact_name contact_name
+from customers c left join orders o
+on c.customer_id = o.customer_id
+group by c.contact_name
+order by total_orders desc
+
 ```
 
 * [ ] ***list orders grouped by customer's city showing the number of orders per city. Returns 69 Records with _Aachen_ showing 6 orders and _Albuquerque_ showing 18 orders***
@@ -157,6 +200,12 @@ Reimport the Northwind database into PostgreSQL using pgAdmin. This is the same 
   </details>
 
 ```SQL
+
+select count(o.order_id) total_orders, c.city city
+from customers c left join orders o
+on c.customer_id = o.customer_id
+group by c.city
+order by city 
 
 ```
 
@@ -177,53 +226,44 @@ Below are some empty tables to be used to normalize the database
 * Not all of the cells will contain data in the final solution
 * Feel free to edit these tables as necessary
 
-Table Name:
+Table Name: Person 
 
-|            |            |            |            |            |            |            |            |            |
-|------------|------------|------------|------------|------------|------------|------------|------------|------------|
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
+|  person_id | person_name|   env_id   |   
+|------------|------------|------------|
+|     1      |    Jane    |      2     |
+|     2      |    Bob     |     null   |
+|     3      |    Sam     |      1     |
 
-Table Name:
 
-|            |            |            |            |            |            |            |            |            |
-|------------|------------|------------|------------|------------|------------|------------|------------|------------|
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
+Table Name: Pet 
 
-Table Name:
+|  pet_id    |  pet_name  |pet_type_id |  person_id |   env_id   |
+|------------|------------|------------|------------|------------|
+|     1      |   Ellie    |     1      |     1      |     2      |
+|     2      |   Joe      |     2      |     2      |    null    |
+|     3      |   Ginger   |     1      |     3      |     1      |
+|     4      |   Tiger    |     5      |     1      |     2      |
+|     5      | Miss Kitty |     5      |     3      |     1      |
+|     6      |    Toby    |     3      |     1      |     2      |
+|     7      |   Bubble   |     4      |     3      |     1      |
 
-|            |            |            |            |            |            |            |            |            |
-|------------|------------|------------|------------|------------|------------|------------|------------|------------|
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
+Table Name: Pet Type
 
-Table Name:
+|pet_type_id |pettype_name|
+|------------|------------|
+|    1       |    Dog     |
+|    2       |    Horse   |
+|    3       |   Turtle   |
+|    4       |    Fish    |
+|    5       |    Cat     |
 
-|            |            |            |            |            |            |            |            |            |
-|------------|------------|------------|------------|------------|------------|------------|------------|------------|
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
+
+Table Name: Enviornment
+
+|   env_id   |  env_name  |
+|------------|------------|
+|     1      |fenced_yard |
+|     2      |city_dweller|
 
 ---
 
